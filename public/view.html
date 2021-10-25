@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        max-width: fit-content;
+        gap: 5px;
+      }
+      .hov {
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        background-color: black;
+      }
+    </style>
+    <div class="">Slider to control pulse rate</div>
+
+    <div class="row">
+      <div class="minVal">0</div>
+      <input type="range" name="rate" id="rate" max="170" min="0" value="80" />
+      <div class="minVal">170</div>
+    </div>
+    <div class="r"></div>
+    <script>
+      const socket = io();
+      const rate = document.getElementById("rate");
+      const r = document.querySelector(".r");
+      const hov = document.querySelector(".hov");
+
+      r.innerHTML = "Pulse: " + rate.value;
+      rate.addEventListener("input", () => {
+        r.innerHTML = "Pulse: " + rate.value;
+        socket.emit("pulseRate", rate.value);
+      });
+      socket.on("pulseRate", (data) => {
+        rate.value = data;
+        r.innerHTML = "Pulse: " + data;
+      });
+    </script>
+  </body>
+</html>
